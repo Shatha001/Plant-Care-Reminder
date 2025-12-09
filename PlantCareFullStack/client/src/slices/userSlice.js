@@ -1,0 +1,185 @@
+
+// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// import axios from "axios";
+
+// const API_URL = "http://localhost:7500"; // Your backend URL
+
+// // ✅ Register new user
+// export const registerThunk = createAsyncThunk("user/register", async (userData) => {
+//   try {
+//     const response = await axios.post(`${API_URL}/register`, userData);
+//     return response.data; // { message, success, user }
+//   } catch (err) {
+//     console.error(err);
+//     throw err;
+//   }
+// });
+
+// // ✅ Login user
+// export const loginThunk = createAsyncThunk("user/login", async (loginData) => {
+//   try {
+//     const response = await axios.post(`${API_URL}/login`, loginData);
+//     return response.data; // { message, success, token, user }
+//   } catch (err) {
+//     console.error(err);
+//     throw err;
+//   }
+// });
+
+// const initialState = {
+//   user: null,
+//   token: null,
+//   msg: null,
+//   loading: false,
+//   success: false
+// };
+
+// const userSlice = createSlice({
+//   name: "user",
+//   initialState,
+//   reducers: {
+//     logout: (state) => {
+//       state.user = null;
+//       state.token = null;
+//       state.msg = null;
+//       state.success = false;
+//     }
+//   },
+//   extraReducers: (builder) => {
+//     // ✅ Register
+//     builder.addCase(registerThunk.pending, (state) => {
+//       state.loading = true;
+//     });
+//     builder.addCase(registerThunk.fulfilled, (state, action) => {
+//       state.msg = action.payload.message;
+//       state.success = action.payload.success;
+//       state.loading = false;
+//     });
+//     builder.addCase(registerThunk.rejected, (state, action) => {
+//       state.msg = action.error.message;
+//       state.loading = false;
+//     });
+
+//     // ✅ Login
+//     builder.addCase(loginThunk.pending, (state) => {
+//       state.loading = true;
+//     });
+//     builder.addCase(loginThunk.fulfilled, (state, action) => {
+//       state.msg = action.payload.message;
+//       state.success = action.payload.success;
+//       state.user = action.payload.user;
+//       state.token = action.payload.token;
+//       state.loading = false;
+//     });
+//     builder.addCase(loginThunk.rejected, (state, action) => {
+//       state.msg = action.error.message;
+//       state.loading = false;
+//     });
+//   }
+// });
+
+// export const { logout } = userSlice.actions;
+// export default userSlice.reducer;
+
+// userSlice.js
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+const API_URL = "http://localhost:7500";
+
+// ✅ Register new user
+export const registerThunk = createAsyncThunk(
+  "user/register",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${API_URL}/register`, userData);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data || { message: "Server error", success: false }
+      );
+    }
+  }
+);
+
+// ✅ Login user
+export const loginThunk = createAsyncThunk(
+  "user/login",
+  async (loginData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${API_URL}/login`, loginData);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data || { message: "Server error", success: false }
+      );
+    }
+  }
+);
+
+const initialState = {
+  user: null,
+  token: null,
+  msg: null,
+  success: false,
+  loading: false
+};
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    logout: (state) => {
+      state.user = null;
+      state.token = null;
+      state.msg = null;
+      state.success = false;
+    },
+    reset: (state) => {
+      state.msg = null;
+      state.success = false;
+      state.loading = false;
+    }
+  },
+  extraReducers: (builder) => {
+    builder
+      // ---------------------------
+      // REGISTER
+      // ---------------------------
+      .addCase(registerThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(registerThunk.fulfilled, (state, action) => {
+        state.msg = action.payload.message;
+        state.success = action.payload.success;
+        state.loading = false;
+      })
+      .addCase(registerThunk.rejected, (state, action) => {
+        state.msg = action.payload?.message || "Registration failed";
+        state.success = false;
+        state.loading = false;
+      })
+
+      // ---------------------------
+      // LOGIN
+      // ---------------------------
+      .addCase(loginThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(loginThunk.fulfilled, (state, action) => {
+        state.msg = action.payload.message;
+        state.success = action.payload.success;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.loading = false;
+      })
+      .addCase(loginThunk.rejected, (state, action) => {
+        state.msg = action.payload?.message || "Login failed";
+        state.success = false;
+        state.loading = false;
+      });
+  }
+});
+
+export const { logout, reset } = userSlice.actions;
+export default userSlice.reducer;
