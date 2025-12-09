@@ -12,7 +12,15 @@ import PlantModel from "./models/plantModel.js";
 
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: "https://plant-care-reminder-1.onrender.com", 
+  }
+));
+
+app.get("/", (req, res) => {
+  res.send("API is running ");
+});
+
 
 
 app.get("/nearby-nurseries", async (req, res) => {
@@ -228,3 +236,4 @@ app.post("/login", async (req, res) => {
 
 const PORT = process.env.PORT || 7500;
 app.listen(PORT, () => console.log(`Server running on port : ${PORT}`));
+
