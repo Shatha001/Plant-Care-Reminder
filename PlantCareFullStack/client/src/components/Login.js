@@ -21,7 +21,7 @@ export default function Login() {
 
   useEffect(() => {
     if (msg === "Login successful") {
-      navigate("/dashboard"); // Redirect to Plant Dashboard
+      navigate("/dashboard"); 
     }
   }, [msg, navigate]);
 
@@ -31,13 +31,13 @@ export default function Login() {
       className="d-flex align-items-center justify-content-center"
       style={{
         height: "100vh",
-        backgroundColor: "#dbead5", // Light green background
+        backgroundColor: "#dbead5", 
         fontFamily: "'Segoe UI', sans-serif"
       }}
     >
       <Container
         style={{
-          backgroundColor: "#4a654a", // Dark green box
+          backgroundColor: "#4a654a", 
           borderRadius: "12px",
           padding: "30px",
           maxWidth: "400px",
@@ -95,7 +95,7 @@ export default function Login() {
                 className="btn"
                 onClick={handleLogin}
                 style={{
-                  backgroundColor: "#333", // Dark gray button
+                  backgroundColor: "#333", 
                   color: "#fff",
                   fontWeight: "bold",
                   width: "100%",
@@ -135,3 +135,4 @@ export default function Login() {
     </Container>
   );
 }
+
