@@ -221,28 +221,75 @@ app.delete("/plants/:id", async (req, res) => {
 
 
 // Login User
+// app.post("/login", async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     if (!email || !password) {
+//       return res.status(400).json({ message: "Email and password required", success: false });
+//     }
+
+//     const user = await UserModel.findOne({ email });
+//     if (!user) return res.status(404).json({ message: "User not found", success: false });
+
+//     const match = await bcrypt.compare(password, user.password);
+//     if (!match) return res.status(401).json({ message: "Incorrect password", success: false });
+
+//     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+//     return res.json({ message: "Login successful", success: true, token, user });
+//   } catch (err) {
+//     return res.status(500).json({ message: "Server error", success: false, error: err.message });
+//   }
+// });
+
 app.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password required", success: false });
     }
 
     const user = await UserModel.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found", success: false });
+    if (!user) {
+      return res.status(404).json({ message: "User not found", success: false });
+    }
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ message: "Incorrect password", success: false });
+    if (!match) {
+      return res.status(401).json({ message: "Incorrect password", success: false });
+    }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    return res.json({ message: "Login successful", success: true, token, user });
+    // ✅ Make sure your env var key is spelled JWT_SECRET in Render
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      console.error("JWT_SECRET is missing. Set it in Render → Environment.");
+      return res.status(500).json({ message: "Server misconfiguration", success: false });
+    }
+
+    // ✅ Create the token here
+    const token = jwt.sign(
+      { userId: user._id },        // payload
+      secret,                      // secret
+      { expiresIn: "1d" }          // options
+    );
+
+    // Optional: don’t send password back
+    const { password: _pw, ...safeUser } = user.toObject();
+
+    return res.json({
+      message: "Login successful",
+      success: true,
+      token,
+      user: safeUser
+    });
   } catch (err) {
-    return res.status(500).json({ message: "Server error", success: false, error: err.message });
+    console.error("Login error:", err);
+    return res.status(500).json({ message: "Server error", success: false });
   }
 });
 
 const PORT = process.env.PORT || 7500;
 app.listen(PORT, () => console.log(`Server running on port : ${PORT}`));
+
 
 
 
