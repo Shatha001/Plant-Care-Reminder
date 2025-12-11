@@ -12,8 +12,8 @@ import PlantModel from "./models/plantModel.js";
 
 
 const allowedOrigins = [
-  'https://plant-care-reminder-1.onrender.com', // your frontend
-  'http://localhost:7500' // for local dev
+  'https://plant-care-reminder-1.onrender.com', 
+  'http://localhost:7500' 
 ];
 
 dotenv.config();
@@ -243,5 +243,6 @@ app.post("/login", async (req, res) => {
 
 const PORT = process.env.PORT || 7500;
 app.listen(PORT, () => console.log(`Server running on port : ${PORT}`));
+
 
 
