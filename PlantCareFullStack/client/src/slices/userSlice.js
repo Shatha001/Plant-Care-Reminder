@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "http://localhost:7500";
+const API_URL = "https://plant-care-reminder.onrender.com";
 
 // Register new user
 export const registerThunk = createAsyncThunk(
@@ -99,4 +99,5 @@ const userSlice = createSlice({
 
 export const { logout, reset } = userSlice.actions;
 export default userSlice.reducer;
+
 
