@@ -11,17 +11,17 @@ import UserModel from "./models/userModel.js";
 import PlantModel from "./models/plantModel.js";
 
 
-// const allowedOrigins = [
-//   'https://plant-care-reminder-1.onrender.com', 
-//   'http://localhost:7500' 
-// ];
+const allowedOrigins = [
+  'https://plant-care-reminder-1.onrender.com', 
+  'http://localhost:7500' 
+];
 
 dotenv.config();
 const app = express();
 app.use(cors({
-  //   origin: allowedOrigins, 
-  //   credentials: true
-  // }
+    origin: allowedOrigins, 
+    credentials: true
+  }
 ));
 
 app.get("/", (req, res) => {
