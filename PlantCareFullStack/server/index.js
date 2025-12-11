@@ -220,7 +220,7 @@ app.delete("/plants/:id", async (req, res) => {
 });
 
 
-Login User
+// Login User
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -289,6 +289,7 @@ app.post("/login", async (req, res) => {
 
 const PORT = process.env.PORT || 7500;
 app.listen(PORT, () => console.log(`Server running on port : ${PORT}`));
+
 
 
 
